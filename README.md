@@ -29,11 +29,17 @@ sudo apt-get install postgresql-client
 
 ```bash
 brew install libpq
-``` 
+```
 
 ## 3. Install Render:
 ### For MacOS/Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
+```
+
+## 4. Run Fastapi:
+
+```bash
+uvicorn src.app.main:app --host 0.0.0.0 --port 8000
 ```
