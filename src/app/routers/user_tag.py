@@ -15,3 +15,14 @@ def read_user_tags(
     limit: Annotated[int, Query(le=100)] = 100,
 ):
     return crud_user_tag.get_all(db=session, offset=offset, limit=limit)
+
+
+@router.get("/user_tags/{user_id}", response_model=List[UserTag])
+def read_user_tags_by_id(
+    user_id: str,
+    session: SessionDep,
+):
+    """
+    Retrieves UserTag entries for a specific user ID.
+    """
+    return crud_user_tag.get_by_field(db=session, field_name="user_id", value=user_id)
