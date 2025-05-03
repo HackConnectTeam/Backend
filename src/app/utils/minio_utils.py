@@ -43,6 +43,7 @@ def retrieve_file(
 
     dict = {}
 
+    logger.info(s3.ls(""))
     if s3.exists(bucket_name + f"/{folder}/"):
         file = bucket_name + f"/{folder}/" + img_path
         if (
