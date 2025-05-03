@@ -16,3 +16,24 @@ pre-commit install && pre-commit install --hook-type commit-msg
 ```
 
 ---
+
+## 2. Install psql
+
+### For Linux
+
+```bash
+sudo apt-get install postgresql-client
+```
+
+### For MacOS
+
+```bash
+brew install libpq
+``` 
+
+## 3. Install Render:
+### For MacOS/Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/render-oss/cli/refs/heads/main/bin/install.sh | sh
+```
