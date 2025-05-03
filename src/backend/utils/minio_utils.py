@@ -46,7 +46,7 @@ def retrieve_files(s3: s3fs.S3FileSystem,
                     img = Image.open(io.BytesIO(file.read()))
                     dict[file.key] = np.array(img)
     else:
-        logger.error(f'Foolder {imgs_path} does not exist in bucket {bucket_name + f"/{folder}/"}')
+        logger.error(f'Folder {imgs_path} does not exist in bucket {bucket_name + f"/{folder}/"}')
 
     return dict
 
@@ -79,7 +79,6 @@ def upload_image(s3: s3fs.S3FileSystem,
         )
         # Create the output directory if it doesn't exist
         output_dir = f"{bucket_name}/{minio_path}"
-        logger.info(f'Uploading to {output_dir}/{img_name}')
         with s3.open(f"{output_dir}/{img_name}", "wb", headers={'Content-Length': str(content_length)}) as file:
             file.write(buffer.getvalue())
         return True
@@ -110,3 +109,8 @@ def upload_images(s3: s3fs.S3FileSystem,
             return False
 
     return True
+
+
+if __name__ == '__main__':
+    s3 = get_s3()
+    upload_image(s3, "test", ("biomass_image_train_0007.jpg", Image.open("/opt/project/data/biomass_image_train_0007.jpg")))
