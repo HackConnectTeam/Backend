@@ -4,7 +4,7 @@ COPY requirements.txt /app/requirements.txt
 
 WORKDIR /app
 
-RUN pip install numpy
+RUN pip install numpy loguru s3fs
 
 RUN pip install -r requirements.txt
 

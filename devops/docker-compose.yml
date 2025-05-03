@@ -63,10 +63,9 @@ services:
           args:
             STAGE: ${STAGE}
         image: ${PROJECT_NAME}:${STAGE}
-        network_mode: "host"
-        container_name: ${PROJECT_NAME}-${STAGE}-container
+        container_name: mlserver
         ports:
-            - "8050:8050"
+            - "0.0.0.0:8050:8050"
         deploy:
           resources:
             reservations:
@@ -81,6 +80,8 @@ services:
         stdin_open: true
         tty: true
         restart: always
+        networks:
+          - mlops-network
         command: mlserver start config
 
 volumes:

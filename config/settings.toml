@@ -1,5 +1,5 @@
 [s3]
-storage_url = "https://backend-l62t.onrender.com"
+storage_url ="https://minio:9005"
 bucket_name = "hackupc"
 folder = "images"
 result_folder = "results"
