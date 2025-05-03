@@ -18,10 +18,10 @@ INSERT INTO user_tag (user_id, tag_id) VALUES
 (3, 4);  -- Carol - ML
 
 -- Insertar proyectos
-INSERT INTO project (user_id, title, description_raw, description_ai, generated_name)
+INSERT INTO project (user_id, title, description_raw, generated_name)
 VALUES
-(1, 'Proyecto A', 'Descripción original A', 'Descripción AI A', 'GenA'),
-(2, 'Proyecto B', 'Descripción original B', 'Descripción AI B', 'GenB');
+(1, 'Proyecto A', 'Descripción original A', 'GenA'),
+(2, 'Proyecto B', 'Descripción original B', 'GenB');
 
 INSERT INTO project_tag (project_id, tag_id) VALUES
 (1, 1),  -- Proyecto A - Python

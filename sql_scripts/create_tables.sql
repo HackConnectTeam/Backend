@@ -23,7 +23,6 @@ id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 title TEXT,
 description_raw TEXT,
-description_ai TEXT,
 generated_name TEXT,
 created_at TIMESTAMPTZ DEFAULT NOW()
 );
