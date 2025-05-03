@@ -32,17 +32,7 @@ def read_user(user_id: int, session: SessionDep):
 
 @router.post("/", response_model=UsersPublic)
 def create_user(user: UsersCreate, session: SessionDep):
-    user_in = crud_user.create(db=session, obj_in=user)
-
-    for tag_name in user.tags:
-        tag = session.exec(select(Tag).where(Tag.name == tag_name)).first()
-        if not tag:
-            tag = crud_tag.create(db=session, obj_in=Tag(name=tag_name))
-
-        user_tag = UserTag(user_id=user_in.id, tag_id=tag.id)
-        crud_user_tag.create(db=session, obj_in=user_tag)
-
-    return user_in
+    return crud_user.create(db=session, obj_in=user)
 
 
 @router.put("/{user_id}", response_model=UsersPublic)
@@ -50,7 +40,25 @@ def update_user(user_id: int, user_update: UsersUpdate, session: SessionDep):
     db_user = crud_user.get(db=session, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
-    return crud_user.update(db=session, db_obj=db_user, obj_in=user_update)
+
+    update_data = user_update.model_dump(exclude_unset=True)
+    update_data.pop("tags", None)
+
+    updated_user = crud_user.update(db=session, db_obj=db_user, obj_in=update_data)
+
+    if user_update.tags is not None:
+        session.exec(UserTag.__table__.delete().where(UserTag.user_id == user_id))
+        session.commit()
+
+        for tag_name in user_update.tags:
+            tag = session.exec(select(Tag).where(Tag.name == tag_name)).first()
+            if not tag:
+                tag = crud_tag.create(db=session, obj_in=Tag(name=tag_name))
+
+            user_tag = UserTag(user_id=user_id, tag_id=tag.id)
+            crud_user_tag.create(db=session, obj_in=user_tag)
+
+    return updated_user
 
 
 @router.delete("/{user_id}", response_model=UsersPublic)
