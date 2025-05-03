@@ -1,0 +1,35 @@
+from datetime import datetime
+from typing import List, Optional
+
+from sqlmodel import Field, SQLModel
+
+
+class ProjectBase(SQLModel):
+    title: str
+    description_raw: str
+    description_ai: str
+    generated_name: str
+
+
+class Project(ProjectBase, table=True):  # type: ignore
+    id: Optional[int] = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="users.id")
+    created_at: Optional[datetime] = Field(default_factory=datetime.now)
+
+
+class ProjectCreate(ProjectBase):
+    user_id: int
+    tags: List[str]
+
+
+class ProjectUpdate(SQLModel):
+    title: Optional[str]
+    description_raw: Optional[str]
+    description_ai: Optional[str]
+    generated_name: Optional[str]
+
+
+class ProjectPublic(ProjectBase):
+    id: int
+    user_id: int
+    created_at: datetime

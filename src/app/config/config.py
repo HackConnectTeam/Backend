@@ -9,7 +9,7 @@ settings = Dynaconf(
     settings_files=["settings.toml", ".secrets.toml"],
     # Load environment variables from .env file
     load_dotenv=True,
-    dotenv_path="../devops/.env",
+    dotenv_path="./devops/.env",
 )
 
 
