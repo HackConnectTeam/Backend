@@ -14,7 +14,6 @@ class Project(ProjectBase, table=True):  # type: ignore
     user_id: str = Field(foreign_key="users.id")
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
-    description_ai: Optional[str] = None
     generated_name: Optional[str] = None
 
 
@@ -26,7 +25,6 @@ class ProjectCreate(ProjectBase):
 class ProjectUpdate(SQLModel):
     title: Optional[str] = None
     description_raw: Optional[str] = None
-    description_ai: Optional[str] = None
     generated_name: Optional[str] = None
 
 
