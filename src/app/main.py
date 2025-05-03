@@ -17,6 +17,7 @@ from src.app.routers import (
     model,
     check_activity,
     generate_names,
+    country,
 )
 
 
@@ -51,3 +52,4 @@ app.include_router(model.router)
 
 app.include_router(check_activity.router)
 app.include_router(generate_names.router)
+app.include_router(country.router)
