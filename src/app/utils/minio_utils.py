@@ -120,8 +120,7 @@ def upload_images(
     :return: List of successfully uploaded image paths in S3
     """
 
-    for img_name, img_data in images.items():
-        img = img_data["img"]
+    for img_name, img in images.items():
         logger.info(f"Uploading {img_name} to {minio_path}")
         img_name = img_name.split("/")[-1]
         if not upload_image(s3, minio_path, (img_name, img)):

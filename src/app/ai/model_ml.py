@@ -42,7 +42,7 @@ class Model(MLModel):
         # Free cuda cache
         torch.cuda.empty_cache()
 
-        return image, depth_map
+        return img, depth_map
 
     async def load(self) -> bool:
         """
