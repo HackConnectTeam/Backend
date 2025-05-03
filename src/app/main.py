@@ -14,6 +14,7 @@ from src.app.routers import (
     # comment,
     project,
     user_tag,
+    model,
 )
 
 
@@ -44,3 +45,4 @@ app.include_router(challenge_match.router)
 app.include_router(project.router)
 app.include_router(project_tag.router)
 app.include_router(user_tag.router)
+app.include_router(model.router)

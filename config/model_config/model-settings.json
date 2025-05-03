@@ -1,0 +1,7 @@
+{
+    "name": "ToMii",
+    "implementation": "src.app.ai.model_ml.Model",
+    "parameters": {
+        "uri": "models:/seg-prod/1"
+    }
+}

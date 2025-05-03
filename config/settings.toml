@@ -2,6 +2,7 @@
 storage_url = "https://backend-l62t.onrender.com"
 bucket_name = "hackupc"
 folder = "images"
+result_folder = "results"
 
 [frontend]
 url = "https://frontend-9k9u.onrender.com"
