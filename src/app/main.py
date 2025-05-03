@@ -6,12 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.app.database import create_db_and_tables
 from src.app.routers import (
+    post,
     project_tag,
     users,
     tag,
     activity,
-    challenge_match,
-    # comment,
     project,
     user_tag,
     model,
@@ -43,7 +42,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(tag.router)
 app.include_router(activity.router)
-app.include_router(challenge_match.router)
+app.include_router(post.router)
 # app.include_router(comment.router)
 app.include_router(project.router)
 app.include_router(project_tag.router)

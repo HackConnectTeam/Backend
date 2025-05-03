@@ -17,9 +17,19 @@ class CRUDBase(Generic[ModelType]):
     ) -> List[ModelType]:
         return db.exec(select(self.model).offset(offset).limit(limit)).all()
 
-    def get_by_field(self, db: Session, field_name: str, value: str) -> List[ModelType]:
+    def get_by_field(
+        self,
+        db: Session,
+        field_name: str,
+        value: str,
+        offset: int = 0,
+        limit: int = 100,
+    ) -> List[ModelType]:
         return db.exec(
-            select(self.model).where(getattr(self.model, field_name) == value)
+            select(self.model)
+            .where(getattr(self.model, field_name) == value)
+            .offset(offset)
+            .limit(limit)
         ).all()
 
     def create(self, db: Session, *, obj_in: SQLModel) -> ModelType:
