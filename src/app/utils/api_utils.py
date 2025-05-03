@@ -1,8 +1,13 @@
+import io
 import json
 from http.client import HTTPException
 
 import requests
+from PIL import Image
 from loguru import logger
+
+from src.app.config.config import settings
+from src.app.utils.minio_utils import get_s3, upload_images
 
 
 def build_inference_url(
@@ -17,13 +22,14 @@ def build_inference_url(
 
     # Read the model settings and settings files
     model_settings = json.load(open(model_settings_path))
-    # settings = json.load(open(settings_path))
+    settings = json.load(open(settings_path))
 
     # Extract the model name, host and port
     model_name = model_settings["name"]
-    # host = settings["host"]
+    host = settings["host"]
+    port = settings["http_port"]
 
-    return f"https://e4b9-147-83-201-128.ngrok-free.app/v2/models/{model_name}/infer"
+    return f"http://{host}:{port}/v2/models/{model_name}/infer"
 
 
 def inference_task(user_id: str, image_data: bytes):
@@ -39,6 +45,21 @@ def inference_task(user_id: str, image_data: bytes):
     if not user_id or not image_data:
         raise HTTPException()
 
+    # To PIL image
+    image = Image.open(io.BytesIO(image_data[0])).convert("RGB")
+
+    # Build the minio path
+    image_path = (
+        settings.s3.bucket_name + "/" + settings.s3.folder + "/" + user_id[0] + ".png"
+    )
+
+    # Upload the image to MinIO
+    upload_images(
+        s3=get_s3(),
+        minio_path=image_path,
+        images={user_id[0]: image},
+    )
+
     data = {
         "inputs": [
             {
@@ -48,11 +69,10 @@ def inference_task(user_id: str, image_data: bytes):
                 "data": user_id,
             },
             {
-                "name": "image",
+                "name": "image_path",
                 "shape": [1],
                 "datatype": "BYTES",
-                "data": image_data,
-                "parameters": {"content_type": "base64"},
+                "data": image_path,
             },
         ]
     }

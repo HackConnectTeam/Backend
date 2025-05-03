@@ -1,4 +1,54 @@
 services:
+    minio:
+      restart: always
+      image: quay.io/minio/minio
+      container_name: minio_container
+      ports:
+        - "0.0.0.0:9005:9005"
+        - "0.0.0.0:9006:9006"
+      command: server /data --console-address ':9006' --address ':9005'
+      environment:
+        - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+        - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      volumes:
+        - minio_data:/data
+      networks:
+        - mlops-network
+
+    postgres:
+      image: postgres:latest
+      container_name: postgres_hackupc
+      restart: always
+      environment:
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_DB}
+      ports:
+        - "0.0.0.0:5433:5432"
+
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      networks:
+        - mlops-network
+
+    fastapi:
+      build:
+        context: ..
+        dockerfile: devops/api.Dockerfile
+      container_name: fastapi_app
+      volumes:
+        - ${PWD}:/app
+      networks:
+        - mlops-network
+      ports:
+        - "0.0.0.0:8000:8000"
+      environment:
+        - PYTHONUNBUFFERED=1
+      restart:
+        always
+      depends_on:
+        - mlserver
+        - postgres
     mlserver:
         environment:
             - STAGE=${STAGE}
@@ -13,10 +63,9 @@ services:
           args:
             STAGE: ${STAGE}
         image: ${PROJECT_NAME}:${STAGE}
-        network_mode: "host"
-        container_name: ${PROJECT_NAME}-${STAGE}-container
+        container_name: mlserver
         ports:
-            - "8040:8040"
+            - "0.0.0.0:8050:8050"
         deploy:
           resources:
             reservations:
@@ -31,4 +80,20 @@ services:
         stdin_open: true
         tty: true
         restart: always
+        networks:
+          - mlops-network
         command: mlserver start config
+
+volumes:
+    minio_data:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: /home/agarcia/minio_hackupc/
+    postgres_data:
+        driver: local
+
+networks:
+    mlops-network:
+        driver: bridge

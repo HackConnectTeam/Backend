@@ -1,5 +1,5 @@
 {
-    "host": "0.0.0.0",
+    "host": "mlserver",
     "debug": true,
     "http_port": 8040
 }

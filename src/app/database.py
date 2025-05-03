@@ -3,9 +3,9 @@ from typing import Annotated
 from fastapi import Depends
 from sqlmodel import Session, SQLModel, create_engine
 
-from src.app.config.config import settings
+from src.app.utils.db_utils import get_db_uri
 
-engine = create_engine(settings.database_url, echo=(settings.logging.level == "DEBUG"))
+engine = create_engine(get_db_uri())
 
 
 def get_session():
