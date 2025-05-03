@@ -8,6 +8,7 @@ class ProjectBase(SQLModel):
     title: str
     description_raw: str
     generated_name: Optional[str] = None
+    github_repo: Optional[str] = None
 
 
 class Project(ProjectBase, table=True):  # type: ignore
@@ -26,6 +27,7 @@ class ProjectUpdate(SQLModel):
     title: Optional[str] = None
     description_raw: Optional[str] = None
     generated_name: Optional[str] = None
+    github_repo: Optional[str] = None
 
 
 class ProjectPublic(ProjectBase):

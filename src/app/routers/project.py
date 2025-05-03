@@ -1,6 +1,9 @@
 from typing import Annotated, List
 from fastapi import APIRouter, HTTPException, Query
+import requests
 from sqlmodel import select
+from urllib.parse import urlparse
+
 
 from src.app.crud.project import project as crud_project
 from src.app.crud.tag import tag as crud_tag
@@ -15,6 +18,15 @@ from src.app.models.project_tag import ProjectTag
 from src.app.models.tag import Tag
 
 router = APIRouter(prefix="/project", tags=["project"])
+
+
+def extract_repo_parts(full_url: str) -> tuple[str, str]:
+    parsed = urlparse(full_url)
+    path_parts = parsed.path.strip("/").split("/")
+    if len(path_parts) >= 2:
+        return path_parts[0], path_parts[1]
+    else:
+        raise ValueError("URL de repositorio no válida")
 
 
 @router.get("/", response_model=List[ProjectPublic])
@@ -43,6 +55,12 @@ def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
 
     project_data = Project(**project.model_dump(), user_id=user.id)
 
+    if project.github_repo:
+        if "/" not in project.github_repo:
+            raise HTTPException(
+                status_code=400, detail="Invalid GitHub repo format. Use 'owner/repo'."
+            )
+
     project_in = crud_project.create(db=session, obj_in=project_data)
 
     for tag_name in project.tags:
@@ -52,6 +70,38 @@ def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
 
         project_tag = ProjectTag(project_id=project_in.id, tag_id=tag.id)
         crud_project_tag.create(db=session, obj_in=project_tag)
+
+    if project.github_repo:
+        try:
+            owner, repo = extract_repo_parts(project.github_repo)
+            url = f"https://api.github.com/repos/{owner}/{repo}/languages"
+            headers = {"Accept": "application/vnd.github.v3+json"}
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 200:
+                langs = response.json().keys()
+                for lang in langs:
+                    lang_lower = lang.title()
+                    tag = session.exec(
+                        select(Tag).where(Tag.name == lang_lower)
+                    ).first()
+                    if not tag:
+                        tag = crud_tag.create(db=session, obj_in=Tag(name=lang_lower))
+                    exists = session.exec(
+                        select(ProjectTag).where(
+                            ProjectTag.project_id == project_in.id,
+                            ProjectTag.tag_id == tag.id,
+                        )
+                    ).first()
+                    if not exists:
+                        project_tag = ProjectTag(
+                            project_id=project_in.id, tag_id=tag.id
+                        )
+                        crud_project_tag.create(db=session, obj_in=project_tag)
+            else:
+                print(f"GitHub API error: {response.status_code}")
+        except Exception as e:
+            print(f"Error fetching GitHub languages: {e}")
 
     create_activities = crud_activity.get_by_field(
         session, "event_type", "complete_project"
