@@ -49,12 +49,14 @@ def inference_task(user_id: str, image_data: bytes):
     image = Image.open(io.BytesIO(image_data[0])).convert("RGB")
 
     # Build the minio path
-    image_path = settings.s3.bucket_name + "/" + settings.s3.folder + "/" + user_id[0]
+    image_path = (
+        settings.s3.bucket_name + "/" + settings.s3.folder + "/" + user_id[0] + ".png"
+    )
 
     # Upload the image to MinIO
     upload_images(
         s3=get_s3(),
-        minio_path=image_path[0],
+        minio_path=image_path,
         images={user_id[0]: image},
     )
 

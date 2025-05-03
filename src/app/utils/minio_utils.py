@@ -43,17 +43,15 @@ def retrieve_file(
 
     dict = {}
 
-    logger.info(s3.ls(""))
     if s3.ls(bucket_name):
-        file = bucket_name + f"/{folder}/" + img_path
         if (
-            file.split("/")[-1].endswith(".jpg")
-            or file.split("/")[-1].endswith(".png")
-            or file.split("/")[-1].endswith(".jpeg")
+            img_path.split("/")[-1].endswith(".jpg")
+            or img_path.split("/")[-1].endswith(".png")
+            or img_path.split("/")[-1].endswith(".jpeg")
         ):
-            with s3.open(file, "rb") as file:
+            with s3.open(img_path, "rb") as file:
                 img = Image.open(io.BytesIO(file.read()))
-                dict[file.key] = np.array(img)
+                dict[img_path] = np.array(img)
     else:
         logger.error(
             f'Folder {folder} does not exist in bucket {bucket_name + f"/{folder}/"}'

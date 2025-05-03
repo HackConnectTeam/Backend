@@ -1,11 +1,11 @@
 [s3]
-storage_url ="https://minio:9005"
+storage_url ="http://minio:9005"
 bucket_name = "hackupc"
 folder = "images"
 result_folder = "results"
 
 [frontend]
-url = "https://frontend-9k9u.onrender.com"
+url = "https://743b-147-83-201-128.ngrok-free.app"
 
 [mlserver]
 host = "mlserver"

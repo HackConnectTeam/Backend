@@ -27,7 +27,7 @@ class Model(MLModel):
 
         # Get the image from the dictionary
         image = next(iter(image.values()))
-
+        print(f"sizeeeee {image.size}")
         # Resize to lower resolution
         image = image.resize(
             (image.size[0] // 3, image.size[1] // 3), resample=Image.Resampling.LANCZOS
