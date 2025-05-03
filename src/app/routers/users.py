@@ -5,7 +5,10 @@ from sqlmodel import select
 from src.app.crud.user import user as crud_user
 from src.app.crud.tag import tag as crud_tag
 from src.app.crud.user_tag import user_tag as crud_user_tag
+from src.app.crud.activity import activity as crud_activity
+from src.app.crud.post import post as crud_post
 from src.app.database import SessionDep
+from src.app.models.post import Post, PostCreate
 from src.app.models.tag import Tag
 from src.app.models.user import UsersCreate, UsersUpdate, UsersPublic
 from src.app.models.user_tag import UserTag
@@ -57,6 +60,33 @@ def update_user(user_id: str, user_update: UsersUpdate, session: SessionDep):
 
             user_tag = UserTag(user_id=user_id, tag_id=tag.id)
             crud_user_tag.create(db=session, obj_in=user_tag)
+
+    complete_activities = crud_activity.get_by_field(session, "event_type", "complete")
+    if complete_activities:
+        complete_activity = complete_activities[0]
+        existing_post = session.exec(
+            select(Post)
+            .where(Post.activity_id == complete_activity.id)
+            .where(Post.from_user_id == user_id)
+        ).first()
+
+        if not existing_post:
+            post_data = PostCreate(
+                from_user_id=user_id,
+                to_user_id=None,
+                activity_id=complete_activity.id,
+                status="completed",
+            )
+            crud_post.create(db=session, obj_in=post_data)
+
+            # Sumar los puntos de la actividad al usuario
+            updated_user.total_points += complete_activity.points
+            crud_user.update(
+                session, updated_user, {"total_points": updated_user.total_points}
+            )
+            session.commit()
+
+            return updated_user
 
     return updated_user
 

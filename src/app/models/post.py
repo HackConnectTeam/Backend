@@ -6,7 +6,7 @@ from sqlmodel import Field, SQLModel
 
 class PostBase(SQLModel):
     from_user_id: str = Field(foreign_key="users.id")
-    to_user_id: str = Field(foreign_key="users.id")
+    to_user_id: Optional[str] = Field(default=None, foreign_key="users.id")
     activity_id: int = Field(foreign_key="activity.id")
     status: str = Field(default="pendiente")
 
