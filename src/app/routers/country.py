@@ -7,7 +7,7 @@ from src.app.schemas.country import Country
 router = APIRouter()
 
 
-@router.get("/countries", response_model=List[Country])
+@router.get("/countries/", response_model=List[Country])
 def get_countries():
     countries = [
         {"code": country.alpha_2, "name": country.name}
