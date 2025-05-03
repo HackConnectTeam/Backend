@@ -9,6 +9,7 @@ from PIL import Image
 from diffusers import (
     StableDiffusionControlNetImg2ImgPipeline,
     ControlNetModel,
+    UniPCMultistepScheduler,
 )
 from transformers import pipeline
 from src.app.utils.image_utils import get_depth_map
@@ -69,6 +70,14 @@ class Model(MLModel):
             use_safetensors=True,
             cache_dir="./model_cache",
         )
+
+        # Apply memory optimizations
+        self._predictive.scheduler = UniPCMultistepScheduler.from_config(
+            self._predictive.scheduler.config
+        )
+        self._predictive.enable_model_cpu_offload()
+        self._predictive.enable_vae_slicing()
+        self._predictive.enable_attention_slicing()
 
         # Estimator for depth estimation
         self._estimator = pipeline("depth-estimation", device="cpu")
