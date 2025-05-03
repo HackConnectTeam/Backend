@@ -37,9 +37,7 @@ def inference_task(user_id: str, image_path: str):
     inference_url = build_inference_url()
 
     if not user_id or not image_path:
-        raise HTTPException(
-            status_code=400, detail="parcel_id and image_paths cannot be empty"
-        )
+        raise HTTPException()
 
     data = {
         "inputs": [
@@ -58,10 +56,7 @@ def inference_task(user_id: str, image_path: str):
     response = requests.post(inference_url, json=data)
 
     if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail="Unknown error during inference request",
-        )
+        raise HTTPException()
 
     response = response.json()
     print(response)
