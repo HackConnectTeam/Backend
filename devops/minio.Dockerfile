@@ -1,8 +1,6 @@
-# Use the official MinIO image
-FROM minio/minio:latest
+FROM quay.io/minio/minio:latest
 
-# Expose the MinIO API port (default: 9000)
-EXPOSE 9000
+EXPOSE 9005 9006
 
-# Start the MinIO server with default data path and enable the web console on port 9001
-CMD ["server", "/data", "--console-address", ":9001"]
+# The command to run MinIO, with API on port 9005 and the WebUI on port 9006
+CMD ["minio", "server", "/data", "--address", ":9005", "--console-address", ":9006"]
