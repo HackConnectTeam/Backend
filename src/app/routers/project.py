@@ -45,7 +45,7 @@ def create_project(project: ProjectCreate, session: SessionDep):
     return project_in
 
 
-@router.put("/{project_id}", response_model=ProjectPublic)
+@router.patch("/{project_id}", response_model=ProjectPublic)
 def update_project(project_id: int, project_update: ProjectUpdate, session: SessionDep):
     db_project = crud_project.get(db=session, id=project_id)
     if not db_project:

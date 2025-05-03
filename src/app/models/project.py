@@ -7,14 +7,14 @@ from sqlmodel import Field, SQLModel
 class ProjectBase(SQLModel):
     title: str
     description_raw: str
-    description_ai: str
-    generated_name: str
 
 
 class Project(ProjectBase, table=True):  # type: ignore
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="users.id")
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
+    description_ai: Optional[str] = None
+    generated_name: Optional[str] = None
 
 
 class ProjectCreate(ProjectBase):
@@ -23,10 +23,10 @@ class ProjectCreate(ProjectBase):
 
 
 class ProjectUpdate(SQLModel):
-    title: Optional[str]
-    description_raw: Optional[str]
-    description_ai: Optional[str]
-    generated_name: Optional[str]
+    title: Optional[str] = None
+    description_raw: Optional[str] = None
+    description_ai: Optional[str] = None
+    generated_name: Optional[str] = None
 
 
 class ProjectPublic(ProjectBase):
