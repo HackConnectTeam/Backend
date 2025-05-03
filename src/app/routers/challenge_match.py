@@ -1,56 +1,54 @@
 from typing import Annotated, List
 from fastapi import APIRouter, HTTPException, Query
 
-from src.app.crud.challenge_match import challenge_match as crud_challenge_match
+from src.app.crud.post import post as crud_post
 from src.app.database import SessionDep
-from src.app.models.challenge_match import (
-    ChallengeMatchPublic,
-    ChallengeMatchCreate,
-    ChallengeMatchUpdate,
+from src.app.models.post import (
+    PostPublic,
+    PostCreate,
+    PostUpdate,
 )
 
-router = APIRouter(prefix="/challenge_match", tags=["challenge_match"])
+router = APIRouter(prefix="/post", tags=["post"])
 
 
-@router.get("/", response_model=List[ChallengeMatchPublic])
-def read_challenge_matches(
+@router.get("/", response_model=List[PostPublic])
+def read_postes(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ):
-    return crud_challenge_match.get_all(db=session, offset=offset, limit=limit)
+    return crud_post.get_all(db=session, offset=offset, limit=limit)
 
 
-@router.get("/{challenge_match_id}", response_model=ChallengeMatchPublic)
-def read_challenge_match(challenge_match_id: int, session: SessionDep):
-    db_challenge_match = crud_challenge_match.get(db=session, id=challenge_match_id)
-    if not db_challenge_match:
+@router.get("/{post_id}", response_model=PostPublic)
+def read_post(post_id: int, session: SessionDep):
+    db_post = crud_post.get(db=session, id=post_id)
+    if not db_post:
         raise HTTPException(status_code=404, detail="Challenge Match not found")
-    return db_challenge_match
+    return db_post
 
 
-@router.post("/", response_model=ChallengeMatchPublic)
-def create_challenge_match(challenge_match: ChallengeMatchCreate, session: SessionDep):
-    return crud_challenge_match.create(db=session, obj_in=challenge_match)
+@router.post("/", response_model=PostPublic)
+def create_post(post: PostCreate, session: SessionDep):
+    return crud_post.create(db=session, obj_in=post)
 
 
-@router.put("/{challenge_match_id}", response_model=ChallengeMatchPublic)
-def update_challenge_match(
-    challenge_match_id: int,
-    challenge_match_update: ChallengeMatchUpdate,
+@router.put("/{post_id}", response_model=PostPublic)
+def update_post(
+    post_id: int,
+    post_update: PostUpdate,
     session: SessionDep,
 ):
-    db_challenge_match = crud_challenge_match.get(db=session, id=challenge_match_id)
-    if not db_challenge_match:
+    db_post = crud_post.get(db=session, id=post_id)
+    if not db_post:
         raise HTTPException(status_code=404, detail="Challenge Match not found")
-    return crud_challenge_match.update(
-        db=session, db_obj=db_challenge_match, obj_in=challenge_match_update
-    )
+    return crud_post.update(db=session, db_obj=db_post, obj_in=post_update)
 
 
-@router.delete("/{challenge_match_id}", response_model=ChallengeMatchPublic)
-def delete_challenge_match(challenge_match_id: int, session: SessionDep):
-    db_challenge_match = crud_challenge_match.delete(db=session, id=challenge_match_id)
-    if not db_challenge_match:
+@router.delete("/{post_id}", response_model=PostPublic)
+def delete_post(post_id: int, session: SessionDep):
+    db_post = crud_post.delete(db=session, id=post_id)
+    if not db_post:
         raise HTTPException(status_code=404, detail="Challenge Match not found")
-    return db_challenge_match
+    return db_post

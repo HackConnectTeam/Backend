@@ -9,6 +9,7 @@ class ActivityBase(SQLModel):
     event_type: str
     points: int
     tag_id: int = Field(foreign_key="tag.id")
+    active: bool = True
 
 
 class Activity(ActivityBase, table=True):  # type: ignore
@@ -24,6 +25,7 @@ class ActivityUpdate(SQLModel):
     description: Optional[str]
     event_type: Optional[str]
     points: Optional[int]
+    active: Optional[bool]
 
 
 class ActivityPublic(ActivityBase):
