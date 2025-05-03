@@ -130,11 +130,13 @@ class Model(MLModel):
             # Upload the results to the S3 bucket
             upload_images(
                 s3=self._s3_client,
-                minio_path=settings.s3.folder
+                minio_path=settings.s3.bucket_name
                 + "/"
-                + image_path[0]
+                + settings.s3.folder
                 + "/"
-                + settings.s3.result_folder,
+                + settings.s3.result_folder
+                + "/"
+                + image_path[0],
                 images={image_path[0]: output},
             )
 
