@@ -18,7 +18,6 @@ class Project(ProjectBase, table=True):  # type: ignore
 
 
 class ProjectCreate(ProjectBase):
-    user_id: int
     tags: List[str]
 
 

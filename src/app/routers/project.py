@@ -36,12 +36,15 @@ def read_project(project_id: int, session: SessionDep):
 
 @router.post("/", response_model=ProjectPublic)
 def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
-    project_in = crud_project.create(db=session, obj_in=project)
-
     user = crud_user.get(session, user_id)
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    project_data = project.model_dump()
+    project_data["user_id"] = user_id
+
+    project_in = crud_project.create(db=session, obj_in=project_data)
 
     for tag_name in project.tags:
         tag = session.exec(select(Tag).where(Tag.name == tag_name)).first()
