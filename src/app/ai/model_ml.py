@@ -9,6 +9,7 @@ from PIL import Image
 from diffusers import (
     StableDiffusionControlNetImg2ImgPipeline,
     ControlNetModel,
+    UniPCMultistepScheduler,
 )
 from transformers import pipeline
 from src.app.utils.image_utils import get_depth_map
@@ -70,6 +71,14 @@ class Model(MLModel):
             cache_dir="./model_cache",
         )
 
+        # Apply memory optimizations
+        self._predictive.scheduler = UniPCMultistepScheduler.from_config(
+            self._predictive.scheduler.config
+        )
+        self._predictive.enable_model_cpu_offload()
+        self._predictive.enable_vae_slicing()
+        self._predictive.enable_attention_slicing()
+
         # Estimator for depth estimation
         self._estimator = pipeline("depth-estimation", device="cpu")
 
@@ -104,8 +113,10 @@ class Model(MLModel):
             ]
         else:
             # Preprocess the images
+            logger.info("Processing images")
             image, depth_map = await self.process_images(dict_images)
 
+            logger.info("Prediction images")
             # Make the prediction with the model deployed
             output = self._predictive(
                 prompt="Image of person to Mii avatar from Wii",
@@ -115,6 +126,7 @@ class Model(MLModel):
                 guidance_scale=7.5,
             ).images[0]
 
+            logger.info("Processing imagesssss")
             # Upload the results to the S3 bucket
             upload_images(
                 s3=self._s3_client,
