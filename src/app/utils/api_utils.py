@@ -17,13 +17,13 @@ def build_inference_url(
 
     # Read the model settings and settings files
     model_settings = json.load(open(model_settings_path))
-    settings = json.load(open(settings_path))
+    # settings = json.load(open(settings_path))
 
     # Extract the model name, host and port
     model_name = model_settings["name"]
-    host = settings["host"]
+    # host = settings["host"]
 
-    return f"https://{host}/v2/models/{model_name}/infer"
+    return f"https://e4b9-147-83-201-128.ngrok-free.app/v2/models/{model_name}/infer"
 
 
 def inference_task(user_id: str, image_path: str):

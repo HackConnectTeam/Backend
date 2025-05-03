@@ -9,9 +9,11 @@ from loguru import logger
 from src.app.config.config import settings
 
 
-def get_s3(endpoint_url: str = settings.s3.storage_url,
-           access_key: str = settings.minio.access_key,
-           secret_key: str = settings.minio.secret_key):
+def get_s3(
+    endpoint_url: str = settings.s3.storage_url,
+    access_key: str = settings.minio.access_key,
+    secret_key: str = settings.minio.secret_key,
+):
     """
     Get an S3 filesystem object.
     :param endpoint_url: URL of the S3 storage
@@ -24,10 +26,13 @@ def get_s3(endpoint_url: str = settings.s3.storage_url,
         endpoint_url=endpoint_url, key=access_key, secret=secret_key
     )
 
-def retrieve_files(s3: s3fs.S3FileSystem,
-                   imgs_path: str,
-                   bucket_name: str = settings.s3.bucket_name,
-                   folder: str = settings.s3.folder) -> dict:
+
+def retrieve_file(
+    s3: s3fs.S3FileSystem,
+    img_path: str,
+    bucket_name: str = settings.s3.bucket_name,
+    folder: str = settings.s3.folder,
+) -> dict:
     """
     List all files in an S3 bucket.
     :param s3: S3 filesystem object
@@ -38,23 +43,32 @@ def retrieve_files(s3: s3fs.S3FileSystem,
 
     dict = {}
 
-    if s3.exists(bucket_name + f"/{folder}/" + imgs_path):
-        files_s3 = s3.ls(bucket_name + f"/{folder}/" + imgs_path)
-        for file in files_s3:
-            if file.split('/')[-1].endswith('.jpg') or file.split('/')[-1].endswith('.png') or file.split('/')[-1].endswith('.jpeg'):
-                with s3.open(file, "rb") as file:
-                    img = Image.open(io.BytesIO(file.read()))
-                    dict[file.key] = np.array(img)
+    logger.info(s3.ls(""))
+    if not s3.ls(bucket_name):
+        file = bucket_name + f"/{folder}/" + img_path
+        if (
+            file.split("/")[-1].endswith(".jpg")
+            or file.split("/")[-1].endswith(".png")
+            or file.split("/")[-1].endswith(".jpeg")
+        ):
+            with s3.open(file, "rb") as file:
+                img = Image.open(io.BytesIO(file.read()))
+                dict[file.key] = np.array(img)
     else:
-        logger.error(f'Folder {imgs_path} does not exist in bucket {bucket_name + f"/{folder}/"}')
+        logger.error(
+            f'Folder {folder} does not exist in bucket {bucket_name + f"/{folder}/"}'
+        )
 
     return dict
 
-def upload_image(s3: s3fs.S3FileSystem,
-                 minio_path: str,
-                 img_info: tuple[str, Image],
-                 bucket_name: str = settings.s3.bucket_name,
-                 folder: str = settings.s3.folder) -> bool:
+
+def upload_image(
+    s3: s3fs.S3FileSystem,
+    minio_path: str,
+    img_info: tuple[str, Image],
+    bucket_name: str = settings.s3.bucket_name,
+    folder: str = settings.s3.folder,
+) -> bool:
     """
     Upload an image to an S3 bucket.
     :param s3: S3 filesystem object
@@ -79,19 +93,22 @@ def upload_image(s3: s3fs.S3FileSystem,
         )
         # Create the output directory if it doesn't exist
         output_dir = f"{bucket_name}/{minio_path}"
-        logger.info(f'Uploading to {output_dir}/{img_name}')
-        with s3.open(f"{output_dir}/{img_name}", "wb", headers={'Content-Length': str(content_length)}) as file:
+        logger.info(f"Uploading to {output_dir}/{img_name}")
+        with s3.open(
+            f"{output_dir}/{img_name}",
+            "wb",
+            headers={"Content-Length": str(content_length)},
+        ) as file:
             file.write(buffer.getvalue())
         return True
     except Exception as e:
-        logger.error(f'Failed to upload {img_name} to {minio_path}: {e}')
+        logger.error(f"Failed to upload {img_name} to {minio_path}: {e}")
     return False
 
 
-
-def upload_images(s3: s3fs.S3FileSystem,
-                  minio_path: str | Path,
-                  images: dict[str, Image]) -> bool:
+def upload_images(
+    s3: s3fs.S3FileSystem, minio_path: str | Path, images: dict[str, Image]
+) -> bool:
     """
     Upload multiple images to an S3 bucket.
 
@@ -103,15 +120,17 @@ def upload_images(s3: s3fs.S3FileSystem,
 
     for img_name, img_data in images.items():
         img = img_data["img"]
-        logger.info(f'Uploading {img_name} to {minio_path}')
+        logger.info(f"Uploading {img_name} to {minio_path}")
         img_name = img_name.split("/")[-1]
         if not upload_image(s3, minio_path, (img_name, img)):
-            logger.error(f'Failed to upload {img_name} to {minio_path}')
+            logger.error(f"Failed to upload {img_name} to {minio_path}")
             return False
 
     return True
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     s3 = get_s3()
-    upload_image(s3, "images", ("jandro.jpeg", Image.open("/opt/project/data/jandro.jpeg")))
+    upload_image(
+        s3, "images", ("jandro.jpeg", Image.open("/opt/project/data/jandro.jpeg"))
+    )
