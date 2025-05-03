@@ -1,0 +1,9 @@
+uvicorn
+fastapi
+sqlmodel
+dynaconf
+loguru
+psycopg2
+requests
+google-genai
+pycountry
