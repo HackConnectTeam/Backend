@@ -23,7 +23,7 @@ def build_inference_url(
     model_name = model_settings["name"]
     host = settings["host"]
 
-    return f"http://{host}/v2/models/{model_name}/infer"
+    return f"https://{host}/v2/models/{model_name}/infer"
 
 
 def inference_task(user_id: str, image_path: str):
