@@ -27,6 +27,9 @@ class Model(MLModel):
         :return: Preprocessed image and depth map
         """
 
+        # Get the image
+        image = list(image.values())[0]
+
         # Convert to PIL Image
         img = Image.fromarray(np.uint8(image)).convert('RGB')
 
