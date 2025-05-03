@@ -10,7 +10,7 @@ from src.app.crud.user import user as crud_user
 from src.app.crud.activity import activity as crud_activity
 from src.app.database import SessionDep
 from src.app.models.post import Post, PostCreate
-from src.app.models.project import ProjectCreate, ProjectPublic, ProjectUpdate
+from src.app.models.project import Project, ProjectCreate, ProjectPublic, ProjectUpdate
 from src.app.models.project_tag import ProjectTag
 from src.app.models.tag import Tag
 
@@ -41,8 +41,9 @@ def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    project_data = project.model_dump()
-    project_data["user_id"] = user_id
+    project_data = Project(**project.model_dump(), user_id=user.id)
+
+    print("!!!!!!", project_data)
 
     project_in = crud_project.create(db=session, obj_in=project_data)
 
