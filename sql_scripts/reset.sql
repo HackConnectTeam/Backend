@@ -17,7 +17,8 @@ CREATE TABLE tag (
 
 CREATE TABLE users (
 id INTEGER PRIMARY KEY,
-name TEXT UNIQUE NOT NULL,
+name TEXT NOT NULL,
+nationality TEXT ,
 created_at TIMESTAMPTZ DEFAULT NOW(),
 last_active_at TIMESTAMPTZ DEFAULT NOW(),
 total_points INTEGER DEFAULT 0

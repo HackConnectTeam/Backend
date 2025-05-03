@@ -5,6 +5,7 @@ from sqlmodel import Field, SQLModel
 
 class UsersBase(SQLModel):
     name: str = Field(index=True)
+    nationality: str
 
 
 class Users(UsersBase, table=True):  # type: ignore
