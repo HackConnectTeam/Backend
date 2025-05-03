@@ -18,7 +18,7 @@ WORKDIR ${APP_HOME}
 
 # Install apt dependencies if needed
 RUN apt-get update && \
-    apt-get install -y curl git postgresql-client && \
+    apt-get install -y curl git postgresql-client build-essential libgl1 && \
     rm -rf /var/lib/apt/lists/*
 
 # Installl uv

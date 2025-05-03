@@ -1,0 +1,40 @@
+services:
+    mlserver:
+        environment:
+            - STAGE=${STAGE}
+            - PROJECT_NAME=${PROJECT_NAME}
+            - MOUNT_PATH=${MOUNT_PATH}
+            - PYTHONPATH=${PYTHONPATH}
+            - AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+            - AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
+        build:
+          context: ..
+          dockerfile: devops/Dockerfile
+          args:
+            STAGE: ${STAGE}
+        image: ${PROJECT_NAME}:${STAGE}
+        container_name: ${PROJECT_NAME}-${STAGE}-container
+        networks:
+            - mlops-network
+        ports:
+            - "8040:8040"
+        deploy:
+          resources:
+            reservations:
+              devices:
+                - driver: "nvidia"
+                  count: "all"
+                  capabilities: ["gpu"]
+        privileged: true
+        volumes:
+          - ${MOUNT_PATH}
+          - /root/.cache:/root/.cache
+        stdin_open: true
+        tty: true
+        restart: always
+        command: mlserver start config
+
+
+networks:
+    mlops-network:
+        driver: bridge

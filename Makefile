@@ -18,6 +18,7 @@ shell:
 		--shm-size=7g \
 		-e PYTHONPATH=/opt/project \
 		-v $(shell pwd):/opt/project \
+		-v /.root/cache:/root/.cache \
 		$(PROJECT_NAME) bash
 
 

@@ -5,9 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "accelerate>=1.6.0",
+    "diffusers>=0.33.1",
     "dynaconf>=3.2.10",
     "loguru>=0.7.3",
+    "mlserver>=1.7.0",
     "numpy>=2.2.5",
+    "opencv-python>=4.11.0.86",
     "pillow>=11.2.1",
     "s3fs>=2025.3.2",
+    "torch>=2.7.0",
+    "transformers>=4.51.3",
+    "uvicorn>=0.34.2",
 ]
