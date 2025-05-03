@@ -5,7 +5,11 @@ from sqlmodel import select
 from src.app.crud.project import project as crud_project
 from src.app.crud.tag import tag as crud_tag
 from src.app.crud.project_tag import project_tag as crud_project_tag
+from src.app.crud.post import post as crud_post
+from src.app.crud.user import user as crud_user
+from src.app.crud.activity import activity as crud_activity
 from src.app.database import SessionDep
+from src.app.models.post import Post, PostCreate
 from src.app.models.project import ProjectCreate, ProjectPublic, ProjectUpdate
 from src.app.models.project_tag import ProjectTag
 from src.app.models.tag import Tag
@@ -31,8 +35,13 @@ def read_project(project_id: int, session: SessionDep):
 
 
 @router.post("/", response_model=ProjectPublic)
-def create_project(project: ProjectCreate, session: SessionDep):
+def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
     project_in = crud_project.create(db=session, obj_in=project)
+
+    user = crud_user.get(session, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
     for tag_name in project.tags:
         tag = session.exec(select(Tag).where(Tag.name == tag_name)).first()
@@ -41,6 +50,34 @@ def create_project(project: ProjectCreate, session: SessionDep):
 
         project_tag = ProjectTag(project_id=project_in.id, tag_id=tag.id)
         crud_project_tag.create(db=session, obj_in=project_tag)
+
+    create_activities = crud_activity.get_by_field(
+        session, "event_type", "complete_project"
+    )
+    if create_activities:
+        create_activity = create_activities[0]
+
+        # Verificar si ya existe un post registrado para esta actividad
+        existing_post = session.exec(
+            select(Post)
+            .where(Post.activity_id == create_activity.id)
+            .where(Post.from_user_id == user.id)
+        ).first()
+
+        if not existing_post:
+            # Crear post para la actividad
+            post_data = PostCreate(
+                from_user_id=user.id,
+                to_user_id=None,
+                activity_id=create_activity.id,
+                status="completed",
+            )
+            crud_post.create(db=session, obj_in=post_data)
+
+            # Sumar puntos al usuario
+            user.total_points += create_activity.points
+            crud_user.update(session, user, {"total_points": user.total_points})
+            session.commit()
 
     return project_in
 
