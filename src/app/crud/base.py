@@ -18,7 +18,9 @@ class CRUDBase(Generic[ModelType]):
         return db.exec(select(self.model).offset(offset).limit(limit)).all()
 
     def get_by_field(self, db: Session, field_name: str, value: str) -> List[ModelType]:
-        return db.exec(select(self.model).where(field_name == value)).first()
+        return db.exec(
+            select(self.model).where(getattr(self.model, field_name) == value)
+        ).all()
 
     def create(self, db: Session, *, obj_in: SQLModel) -> ModelType:
         db_obj = self.model(**obj_in.model_dump())
