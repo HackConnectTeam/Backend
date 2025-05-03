@@ -3,7 +3,7 @@ from src.app.utils.api_utils import inference_task
 
 from src.app.models.prediction_response import PredictionResponse
 
-router = APIRouter(prefix="/ToMii", tags=["To Mii"])
+router = APIRouter(prefix="/to_mii", tags=["Avatar Inference"])
 
 
 @router.post(
