@@ -43,8 +43,13 @@ def retrieve_file(
 
     dict = {}
 
+    s3 = get_s3()
+    print("Buckets disponibles:", s3.ls(""))
+    print("Objetos en hackupc/images/:", s3.ls("hackupc/images/"))
+    print("Objetos en hackupc/:", s3.ls("hackupc/"))
+
     logger.info(s3.ls(""))
-    if not s3.ls(bucket_name):
+    if s3.ls(bucket_name):
         file = bucket_name + f"/{folder}/" + img_path
         if (
             file.split("/")[-1].endswith(".jpg")
@@ -88,9 +93,6 @@ def upload_image(
         # Upload to MinIO
         img_name = img_name.replace(".jpg", ".png")
         img_name = img_name.split("/")[-1]
-        logger.info(
-            f"Uploading to {bucket_name}/{folder}/{minio_path}/{img_name} a {type(image)}"
-        )
         # Create the output directory if it doesn't exist
         output_dir = f"{bucket_name}/{minio_path}"
         logger.info(f"Uploading to {output_dir}/{img_name}")
