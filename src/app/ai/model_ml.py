@@ -139,5 +139,5 @@ class Model(MLModel):
             )
 
             return [
-                f'{{"result_minio_path": "{settings.s3.out_path}","images_path": {json.dumps(list(dict_images.keys()))}, "message": {json.dumps("Success")}}}'
+                f'{{"result_minio_path": "{settings.s3.result_folder}","images_path": {json.dumps(list(dict_images.keys()))}, "message": {json.dumps("Success")}}}'
             ]
