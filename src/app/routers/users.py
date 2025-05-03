@@ -23,7 +23,7 @@ def read_users(
 
 
 @router.get("/{user_id}", response_model=UsersPublic)
-def read_user(user_id: int, session: SessionDep):
+def read_user(user_id: str, session: SessionDep):
     db_user = crud_user.get(db=session, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -35,8 +35,8 @@ def create_user(user: UsersCreate, session: SessionDep):
     return crud_user.create(db=session, obj_in=user)
 
 
-@router.put("/{user_id}", response_model=UsersPublic)
-def update_user(user_id: int, user_update: UsersUpdate, session: SessionDep):
+@router.patch("/{user_id}", response_model=UsersPublic)
+def update_user(user_id: str, user_update: UsersUpdate, session: SessionDep):
     db_user = crud_user.get(db=session, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -62,7 +62,7 @@ def update_user(user_id: int, user_update: UsersUpdate, session: SessionDep):
 
 
 @router.delete("/{user_id}", response_model=UsersPublic)
-def delete_user(user_id: int, session: SessionDep):
+def delete_user(user_id: str, session: SessionDep):
     db_user = crud_user.delete(db=session, id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
