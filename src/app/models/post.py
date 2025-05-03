@@ -9,7 +9,6 @@ class PostBase(SQLModel):
     to_user_id: str = Field(foreign_key="users.id")
     activity_id: int = Field(foreign_key="activity.id")
     status: str = Field(default="pendiente")
-    name: str
 
 
 class Post(PostBase, table=True):  # type: ignore

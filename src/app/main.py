@@ -15,6 +15,7 @@ from src.app.routers import (
     project,
     user_tag,
     model,
+    check_activity,
 )
 
 
@@ -46,3 +47,5 @@ app.include_router(project.router)
 app.include_router(project_tag.router)
 app.include_router(user_tag.router)
 app.include_router(model.router)
+
+app.include_router(check_activity.router)
