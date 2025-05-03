@@ -43,8 +43,6 @@ def create_project(project: ProjectCreate, session: SessionDep, user_id: str):
 
     project_data = Project(**project.model_dump(), user_id=user.id)
 
-    print("!!!!!!", project_data)
-
     project_in = crud_project.create(db=session, obj_in=project_data)
 
     for tag_name in project.tags:

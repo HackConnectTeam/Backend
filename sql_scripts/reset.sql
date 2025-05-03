@@ -66,5 +66,18 @@ created_at TIMESTAMPTZ DEFAULT NOW(),
 updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE team (
+  id SERIAL PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE teammember (
+  team_id INTEGER REFERENCES team(id) ON DELETE CASCADE,
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  PRIMARY KEY (team_id, user_id)
+);
+
+
 CREATE INDEX idx_users_name ON users(name);
 CREATE INDEX idx_project_users ON project(user_id);

@@ -12,6 +12,7 @@ class ProjectBase(SQLModel):
 class Project(ProjectBase, table=True):  # type: ignore
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: str = Field(foreign_key="users.id")
+    team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
     description_ai: Optional[str] = None
     generated_name: Optional[str] = None
@@ -19,6 +20,7 @@ class Project(ProjectBase, table=True):  # type: ignore
 
 class ProjectCreate(ProjectBase):
     tags: List[str]
+    team_id: Optional[int] = None
 
 
 class ProjectUpdate(SQLModel):

@@ -17,6 +17,7 @@ from src.app.routers import (
     check_activity,
     generate_names,
     country,
+    team,
 )
 
 
@@ -48,6 +49,7 @@ app.include_router(project.router)
 app.include_router(project_tag.router)
 app.include_router(user_tag.router)
 app.include_router(model.router)
+app.include_router(team.router)
 
 app.include_router(check_activity.router)
 app.include_router(generate_names.router)
