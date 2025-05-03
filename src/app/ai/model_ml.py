@@ -104,8 +104,10 @@ class Model(MLModel):
             ]
         else:
             # Preprocess the images
+            logger.info("Processing images")
             image, depth_map = await self.process_images(dict_images)
 
+            logger.info("Prediction images")
             # Make the prediction with the model deployed
             output = self._predictive(
                 prompt="Image of person to Mii avatar from Wii",
@@ -115,6 +117,7 @@ class Model(MLModel):
                 guidance_scale=7.5,
             ).images[0]
 
+            logger.info("Processing imagesssss")
             # Upload the results to the S3 bucket
             upload_images(
                 s3=self._s3_client,
