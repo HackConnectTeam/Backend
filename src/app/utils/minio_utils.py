@@ -43,11 +43,6 @@ def retrieve_file(
 
     dict = {}
 
-    s3 = get_s3()
-    print("Buckets disponibles:", s3.ls(""))
-    print("Objetos en hackupc/images/:", s3.ls("hackupc/images/"))
-    print("Objetos en hackupc/:", s3.ls("hackupc/"))
-
     logger.info(s3.ls(""))
     if s3.ls(bucket_name):
         file = bucket_name + f"/{folder}/" + img_path

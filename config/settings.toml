@@ -6,3 +6,8 @@ result_folder = "results"
 
 [frontend]
 url = "https://frontend-9k9u.onrender.com"
+
+[mlserver]
+host = "mlserver"
+port = 8050
+batch_size = 2
