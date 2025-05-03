@@ -26,32 +26,33 @@ def build_inference_url(
     return f"https://e4b9-147-83-201-128.ngrok-free.app/v2/models/{model_name}/infer"
 
 
-def inference_task(user_id: str, image_path: str):
+def inference_task(user_id: str, image_data: bytes):
     """
     Perform inference on the provided images and parcel ID.
     :param user: ID of the user
-    :param image_path: Path of the folder with image
+    :param image: Image
     :return:
     """
     # Build the inference URL where the model is dettingeployed
     inference_url = build_inference_url()
 
-    if not user_id or not image_path:
+    if not user_id or not image_data:
         raise HTTPException()
 
     data = {
         "inputs": [
             {
                 "name": "user_id",
-                "shape": [len(user_id)],
+                "shape": [1],
                 "datatype": "BYTES",
                 "data": user_id,
             },
             {
-                "name": "image_path",
-                "shape": [len(image_path)],
+                "name": "image",
+                "shape": [1],
                 "datatype": "BYTES",
-                "data": image_path,
+                "data": image_data,
+                "parameters": {"content_type": "base64"},
             },
         ]
     }
