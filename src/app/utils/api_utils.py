@@ -60,8 +60,6 @@ def inference_task(user_id: str, image_path: str):
     logger.info(f"Inference URL: {inference_url}")
     response = requests.post(inference_url, json=data)
 
-    response = response.json()
-    print(response)
-
     if response.status_code != 200:
+        logger.error(f"Error in inference: {response.text}")
         raise HTTPException()
