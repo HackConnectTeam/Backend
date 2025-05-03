@@ -6,7 +6,7 @@ from src.app.crud.activity import activity as crud_activity
 from src.app.crud.tag import tag as crud_tag
 from src.app.crud.post import post as crud_post
 from src.app.database import SessionDep
-from src.app.models.post import PostCreate
+from src.app.models.post import Post, PostCreate
 from src.app.models.user_tag import UserTag
 from src.app.schemas.challenge import ChallengeResponse
 
@@ -48,15 +48,30 @@ def check_challenge(
     ).first()
 
     status = "completed" if user_tag else "failed"
+    new_post = None
 
-    # 5. Determine the response.
-    post_data = PostCreate(
-        from_user_id=completing_user_id,
-        to_user_id=tagged_user_id,
-        activity_id=activity_id,
-        status=status,
-    )
+    existing_post = session.exec(
+        select(Post).where(
+            Post.from_user_id == completing_user_id, Post.activity_id == activity_id
+        )
+    ).first()
+    if existing_post:
+        return ChallengeResponse(status="failed", post=None)
 
-    new_post = crud_post.create(session, obj_in=post_data)
+    if status == "completed":
+        # 6. Create the post
+        post_data = PostCreate(
+            from_user_id=completing_user_id,
+            to_user_id=tagged_user_id,
+            activity_id=activity_id,
+            status=status,
+        )
+        new_post = crud_post.create(db=session, obj_in=post_data)
 
-    return ChallengeResponse(status=status, post=new_post if new_post else None)
+        # 7. Update user points
+        completing_user.total_points += activity.points
+        crud_user.update(
+            session, completing_user, {"total_points": completing_user.total_points}
+        )
+
+    return ChallengeResponse(status=status, post=new_post)
