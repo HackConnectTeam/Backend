@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
@@ -7,6 +8,7 @@ from src.app.crud.tag import tag as crud_tag
 from src.app.crud.post import post as crud_post
 from src.app.database import SessionDep
 from src.app.models.post import Post, PostCreate
+from src.app.models.user import UsersPublic
 from src.app.models.user_tag import UserTag
 from src.app.schemas.challenge import ChallengeResponse
 
@@ -75,3 +77,12 @@ def check_challenge(
         )
 
     return ChallengeResponse(status=status, post=new_post)
+
+
+@router.get("/leaderboard/", response_model=List[UsersPublic])
+def get_leaderboard(db: SessionDep):
+    all_users = crud_user.get_all(db)
+
+    all_users.sort(key=lambda x: x.total_points, reverse=True)
+
+    return all_users

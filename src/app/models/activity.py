@@ -8,13 +8,13 @@ class ActivityBase(SQLModel):
     description: str
     event_type: str
     points: int
-    tag_id: int = Field(foreign_key="tag.id")
     active: bool = True
 
 
 class Activity(ActivityBase, table=True):  # type: ignore
     id: Optional[int] = Field(default=None, primary_key=True)
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
+    tag_id: int = Field(foreign_key="tag.id")
 
 
 class ActivityCreate(ActivityBase):
