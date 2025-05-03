@@ -41,12 +41,17 @@ def inference_task(user_id: str, image_path: str):
 
     data = {
         "inputs": [
-            {"name": "user_id", "shape": [1], "datatype": "BYTES", "data": [user_id]},
+            {
+                "name": "user_id",
+                "shape": [len(user_id)],
+                "datatype": "BYTES",
+                "data": user_id,
+            },
             {
                 "name": "image_path",
-                "shape": [1],
+                "shape": [len(image_path)],
                 "datatype": "BYTES",
-                "data": [image_path],
+                "data": image_path,
             },
         ]
     }
@@ -55,8 +60,8 @@ def inference_task(user_id: str, image_path: str):
     logger.info(f"Inference URL: {inference_url}")
     response = requests.post(inference_url, json=data)
 
-    if response.status_code != 200:
-        raise HTTPException()
-
     response = response.json()
     print(response)
+
+    if response.status_code != 200:
+        raise HTTPException()
