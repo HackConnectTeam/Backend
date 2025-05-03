@@ -4,7 +4,7 @@ from http.client import HTTPException
 import requests
 
 
-def build_inference_url(model_settings_path: str = "config/model/model-settings.json",
+def build_inference_url(model_settings_path: str = "config/model_config/model-settings.json",
                         settings_path: str = "config/settings.json") -> str:
     """
     Build the URL for the inference endpoint.

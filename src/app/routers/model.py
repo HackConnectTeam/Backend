@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Body, Depends
-from src.app.crud.prediction import inference_task
+from src.app.utils.api_utils import inference_task
 
-from src.app.models import PredictionResponse
+from src.app.models.prediction_response import PredictionResponse
 
 router = APIRouter(prefix="/ToMii", tags=["To Mii"])
 
