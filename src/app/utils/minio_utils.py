@@ -68,11 +68,7 @@ def retrieve_file(
 
 
 def upload_image(
-    s3: s3fs.S3FileSystem,
-    minio_path: str,
-    img_info: tuple[str, Image],
-    bucket_name: str = settings.s3.bucket_name,
-    folder: str = settings.s3.folder,
+    s3: s3fs.S3FileSystem, minio_path: str, img_info: tuple[str, Image]
 ) -> bool:
     """
     Upload an image to an S3 bucket.
@@ -93,11 +89,9 @@ def upload_image(
         # Upload to MinIO
         img_name = img_name.replace(".jpg", ".png")
         img_name = img_name.split("/")[-1]
-        # Create the output directory if it doesn't exist
-        output_dir = f"{bucket_name}/{minio_path}"
-        logger.info(f"Uploading to {output_dir}/{img_name}")
+        logger.info(f"Uploading to {minio_path}")
         with s3.open(
-            f"{output_dir}/{img_name}",
+            minio_path,
             "wb",
             headers={"Content-Length": str(content_length)},
         ) as file:
