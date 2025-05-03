@@ -2,6 +2,7 @@ import json
 from http.client import HTTPException
 
 import requests
+from loguru import logger
 
 
 def build_inference_url(model_settings_path: str = "config/model_config/model-settings.json",
@@ -54,6 +55,8 @@ def inference_task(user_id: str,
         ]
     }
 
+    logger.info(f"Inference request: {data}")
+    logger.info(f"Inference URL: {inference_url}")
     response = requests.post(inference_url, json=data)
 
     if response.status_code != 200:

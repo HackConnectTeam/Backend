@@ -16,6 +16,7 @@ async def predict(
     image_path: str = Body(..., description='Path (from the bucket) to the image for inference'),
 ):
 
+
     # Call the inference function asynchronously
     background_tasks.add_task(inference_task, user_id, image_path)
 

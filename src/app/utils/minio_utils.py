@@ -114,4 +114,4 @@ def upload_images(s3: s3fs.S3FileSystem,
 
 if __name__ == '__main__':
     s3 = get_s3()
-    upload_image(s3, "test", ("biomass_image_train_0007.jpg", Image.open("/opt/project/data/biomass_image_train_0007.jpg")))
+    upload_image(s3, "images", ("jandro.jpeg", Image.open("/opt/project/data/jandro.jpeg")))
