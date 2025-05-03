@@ -9,7 +9,7 @@ class CRUDBase(Generic[ModelType]):
     def __init__(self, model: type[ModelType]):
         self.model = model
 
-    def get(self, db: Session, id: int) -> Optional[ModelType]:
+    def get(self, db: Session, id: Union[int, str]) -> Optional[ModelType]:
         return db.get(self.model, id)
 
     def get_all(
