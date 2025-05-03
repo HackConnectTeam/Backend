@@ -7,6 +7,7 @@ from sqlmodel import Field, SQLModel
 class ProjectBase(SQLModel):
     title: str
     description_raw: str
+    generated_name: Optional[str] = None
 
 
 class Project(ProjectBase, table=True):  # type: ignore
@@ -14,7 +15,6 @@ class Project(ProjectBase, table=True):  # type: ignore
     user_id: str = Field(foreign_key="users.id")
     team_id: Optional[int] = Field(default=None, foreign_key="team.id")
     created_at: Optional[datetime] = Field(default_factory=datetime.now)
-    generated_name: Optional[str] = None
 
 
 class ProjectCreate(ProjectBase):
