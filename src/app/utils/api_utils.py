@@ -42,15 +42,15 @@ def inference_task(user_id: str,
         "inputs": [
             {
                 "name": "user_id",
-                "shape": [len(user_id)],
+                "shape": [1],
                 "datatype": "BYTES",
-                "data": user_id
+                "data": [user_id]
             },
             {
                 "name": "image_path",
-                "shape": [len(image_path)],
+                "shape": [1],
                 "datatype": "BYTES",
-                "data": image_path
+                "data": [image_path]
             },
         ]
     }
