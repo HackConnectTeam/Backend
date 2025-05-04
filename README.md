@@ -68,12 +68,12 @@ PYTHONPATH=/opt/project:/opt/project/src:/opt/project/app
 POSTGRES_USER=app_user
 POSTGRES_DB=app_db
 POSTGRES_PASSWORD=secret
-POSTGRES_HOST
+POSTGRES_HOST=host
 
 MINIO_ROOT_USER=minioadmin
 MINIO_ROOT_PASSWORD=minioadmin123
 
-PY_BACKEND_GEMINI_API=
+PY_BACKEND_GEMINI_API=apikey
 PY_BACKEND_DATABASE_URL==postgresql+asyncpg://app_user:secret@db/app_db
 ```
 ---
