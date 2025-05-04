@@ -1,3 +1,5 @@
+import base64
+import io
 import json
 from typing import List, Optional
 
@@ -25,13 +27,19 @@ class Model(MLModel):
         :return: Preprocessed image and depth map
         """
 
-        # Get the image from the dictionary
-        image = next(iter(image.values()))
-        print(f"sizeeeee {image.size}")
-        # Resize to lower resolution
-        image = image.resize(
-            (image.size[0] // 3, image.size[1] // 3), resample=Image.Resampling.LANCZOS
+        # Get the base64 encoded image string from the dictionary
+        image_base64 = next(iter(image.values()))
+
+        # Remove the base64 data prefix if present
+        image_base64 = (
+            image_base64.split(",")[1] if "," in image_base64 else image_base64
         )
+
+        # Decode the base64 string to bytes
+        image_data = base64.b64decode(image_base64)
+
+        # Open the image from the decoded bytes
+        image = Image.open(io.BytesIO(image_data)).convert("RGB")
 
         # Compute the depth map
         depth_map = get_depth_map(image, self._estimator).unsqueeze(0).half().to("cuda")
