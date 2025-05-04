@@ -17,6 +17,7 @@ from src.app.routers import (
     generate_names,
     country,
     team,
+    image_retrieval,
 )
 
 
@@ -50,3 +51,6 @@ app.include_router(team.router)
 app.include_router(check_activity.router)
 app.include_router(generate_names.router)
 app.include_router(country.router)
+
+app.include_router(team.router)
+app.include_router(image_retrieval.router)

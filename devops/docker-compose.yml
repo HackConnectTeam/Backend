@@ -15,21 +15,21 @@ services:
       networks:
         - mlops-network
 
-    postgres:
-      image: postgres:latest
-      container_name: postgres_hackupc
-      restart: always
-      environment:
-        - POSTGRES_USER=${POSTGRES_USER}
-        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-        - POSTGRES_DB=${POSTGRES_DB}
-      ports:
-        - "0.0.0.0:5433:5432"
-
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      networks:
-        - mlops-network
+#    postgres:
+#      image: postgres:latest
+#      container_name: postgres_hackupc
+#      restart: always
+#      environment:
+#        - POSTGRES_USER=${POSTGRES_USER}
+#        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#        - POSTGRES_DB=${POSTGRES_DB}
+#      ports:
+#        - "0.0.0.0:5433:5432"
+#      volumes:
+#        - postgres_data:/var/lib/postgresql/data
+#        - ../sql_scripts/reset.sql:/docker-entrypoint-initdb.d/reset.sql
+#      networks:
+#        - mlops-network
 
     fastapi:
       build:
@@ -48,7 +48,7 @@ services:
         always
       depends_on:
         - mlserver
-        - postgres
+#        - postgres
     mlserver:
         environment:
             - STAGE=${STAGE}
