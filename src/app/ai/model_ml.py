@@ -1,5 +1,3 @@
-import base64
-import io
 import json
 from typing import List, Optional
 
@@ -28,26 +26,22 @@ class Model(MLModel):
         """
 
         # Get the base64 encoded image string from the dictionary
-        image_base64 = next(iter(image.values()))
+        image = next(iter(image.values()))
 
-        # Remove the base64 data prefix if present
-        image_base64 = (
-            image_base64.split(",")[1] if "," in image_base64 else image_base64
-        )
+        image_pil = Image.fromarray(image)
 
-        # Decode the base64 string to bytes
-        image_data = base64.b64decode(image_base64)
-
-        # Open the image from the decoded bytes
-        image = Image.open(io.BytesIO(image_data)).convert("RGB")
+        # Resize the image to same dimensions
+        image_pil = image_pil.resize((image_pil.size[0] // 3, image_pil.size[1] // 3))
 
         # Compute the depth map
-        depth_map = get_depth_map(image, self._estimator).unsqueeze(0).half().to("cuda")
+        depth_map = (
+            get_depth_map(image_pil, self._estimator).unsqueeze(0).half().to("cuda")
+        )
 
         # Free cuda cache
         torch.cuda.empty_cache()
 
-        return image, depth_map
+        return image_pil, depth_map
 
     async def load(self) -> bool:
         """
@@ -125,6 +119,8 @@ class Model(MLModel):
             guidance_scale=7.5,
         ).images[0]
 
+        torch.cuda.empty_cache()
+
         logger.info("Uploading image")
         # Upload the results to the S3 bucket
         upload_images(
@@ -135,7 +131,8 @@ class Model(MLModel):
             + "/"
             + settings.s3.result_folder
             + "/"
-            + user_id[0],
+            + user_id[0]
+            + ".png",
             images={user_id[0]: output},
         )
 
