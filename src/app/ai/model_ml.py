@@ -13,7 +13,7 @@ from diffusers import (
     UniPCMultistepScheduler,
 )
 from src.app.config.config import settings
-from src.app.utils.image_utils import get_depth_map, resize_image
+from src.app.utils.image_utils import get_depth_map
 from src.app.utils.minio_utils import get_s3, upload_images, retrieve_file
 
 
@@ -30,11 +30,8 @@ class Model(MLModel):
 
         image_pil = Image.fromarray(image)
 
-        # Resize for reducing the amount of memory used
-        image_pil = resize_image(image_pil)
-
         # Resize the image to same dimensions
-        # image_pil = image_pil.resize((image_pil.size[0] // 3, image_pil.size[1] // 3))
+        image_pil = image_pil.resize((image_pil.size[0] // 4, image_pil.size[1] // 4))
 
         # Compute the depth map
         depth_map = (
@@ -77,6 +74,9 @@ class Model(MLModel):
         self._predictive.scheduler = UniPCMultistepScheduler.from_config(
             self._predictive.scheduler.config
         )
+        self._predictive.enable_model_cpu_offload()
+        self._predictive.enable_vae_slicing()
+        self._predictive.enable_attention_slicing()
 
         # Estimator for depth estimation
         self._estimator = pipeline("depth-estimation", device="cpu")
@@ -112,14 +112,13 @@ class Model(MLModel):
         logger.info("Prediction images")
         # Make the prediction with the model deployed
         output = self._predictive(
-            prompt="Give me a Mii representation for a human in the photo.",
+            prompt="Image of person to Mii avatar from Wii",
             image=image,
             control_image=depth_map,
             num_inference_steps=20,
             guidance_scale=7.5,
         ).images[0]
 
-        # Free cuda cache
         torch.cuda.empty_cache()
 
         logger.info("Uploading image")
