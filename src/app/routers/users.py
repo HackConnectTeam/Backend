@@ -33,6 +33,12 @@ def read_user(user_id: str, session: SessionDep):
     return db_user
 
 
+@router.get("/exists/{user_id}")
+def user_exists(user_id: str, session: SessionDep):
+    exists = crud_user.get(db=session, id=user_id) is not None
+    return {"exists": exists}
+
+
 @router.post("/", response_model=UsersPublic)
 def create_user(user: UsersCreate, session: SessionDep):
     return crud_user.create(db=session, obj_in=user)
