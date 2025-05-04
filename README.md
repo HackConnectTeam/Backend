@@ -1,20 +1,30 @@
+# 🚀 Hack Connect – A fun and engaging app to connect hackers during a hackathon
+Hack Connect is a social platform designed to bring hackathon participants together during the coding hours. Instead of just grinding code, users can take fun breaks, complete mini-challenges, and connect with other hackers based on shared interests and backgrounds.
 
-# 🚀 Hack Connect - A funny and engaging social network for all kind of people
+Whether you're taking a break from debugging or just want to meet cool people, Hack Connect adds a social and creative twist to your hackathon experience.
 
-**Hack Connect** is a social network designed to connect people through events, activities, and shared interests.
-The platform allows users to create and join events, share experiences, and make new friends. With a focus on fun and
-engagement, Hack Connect aims to foster a vibrant community where users can connect with like-minded individuals.
-From event creation to funny avatars generation, Hack Connect provides a seamless experience for users to interact and engage
-because of common stuff such as favorite programming languages, countries, and hobbies.
----
-## Why choose Hack Connect?
-Hack Connect is not just another social network. It stands out with its unique features:
-- 🎉 **Event Creation**: Users can create and manage events, making it easy to organize meetups and activities.
-- 💬 **User Engagement**: The platform encourages user interaction through events and shared interests, making it a lively space for socializing.
-- 🤝 **Community Focus**: Hack Connect is designed to foster a sense of community, allowing users to connect with others who share their interests.
-- 😄 **Funny Avatars**: Users can generate funny avatars based on their photos, adding a fun twist to their profiles.
+## 🎯 What can you do with Hack Connect?
+🧩 Complete Fun Challenges: Break the ice and beat boredom by completing quick, creative challenges. They're designed to help participants connect and stay energized throughout the event.
 
----
+💻 Create Your Project: Register your hackathon project directly in the platform, making it easy to share what you're building with others.
+
+🏆 Check the Scoreboard: See how you and others are doing! Earn points by solving challenges and climb the live scoreboard — a fun way to add friendly competition to the event.
+
+😄 Generate Funny Avatars: Upload your photo and get a fun avatar created with AI-based diffusion models — a quirky way to show your personality!
+
+🧠 Name Your Project with AI: Stuck on a project name? Let our AI suggest creative, memorable names tailored to your hack idea.
+
+🌐 Meet Like-Minded Hackers: Get matched with people who share your programming languages, country, and hobbies — perfect for networking and collaboration.
+
+## 💡 Why Hack Connect?
+Hackathons are intense, but that doesn't mean they have to be isolating or boring. Hack Connect is built for:
+
+🤝 Community Building: Make real connections during the hackathon, not just at the closing ceremony.
+
+🕹️ Micro-Entertainment: Keep the energy high with fun features that offer lighthearted breaks without leaving the event context.
+
+🧩 Enhanced Team Dynamics: Share laughs, ideas, and vibes with your team or new friends you meet on the platform.
+
 ## 🛠️ How can I use Hack Connect?
 
 Well, it is easy! Just follow these steps:
@@ -72,6 +82,6 @@ MIT License. See [LICENSE](./LICENSE) for more information.
 
 ---
 
-## 🙌 Acknowledgements
+## 🙏 Special Thanks
 
-Special thanks to:
+A huge thank you to the HackUPC organizers for putting together such an amazing event.
