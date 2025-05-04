@@ -46,6 +46,25 @@ def read_post_by_activity_id(activity_id: int, session: SessionDep):
     return completed_posts
 
 
+@router.get("/completed_activities/{user_id}", response_model=List[int])
+def get_completed_activity_ids(user_id: str, session: SessionDep):
+    db_posts = crud_post.get_by_field(
+        db=session, field_name="from_user_id", value=user_id
+    )
+
+    if not db_posts:
+        raise HTTPException(status_code=404, detail="User has no posts")
+
+    completed_activity_ids = list(
+        {post.activity_id for post in db_posts if post.status == "completed"}
+    )
+
+    if not completed_activity_ids:
+        raise HTTPException(status_code=404, detail="No completed activities found")
+
+    return completed_activity_ids
+
+
 @router.post("/", response_model=PostPublic)
 def create_post(post: PostCreate, session: SessionDep):
     return crud_post.create(db=session, obj_in=post)
