@@ -96,4 +96,4 @@ MIT License. See [LICENSE](./LICENSE) for more information.
 
 ## 🙌 Acknowledgements
 
-Special thanks to:
+A huge thank you to the HackUPC organizers for putting together such an amazing event.
