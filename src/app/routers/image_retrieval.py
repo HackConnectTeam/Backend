@@ -1,7 +1,5 @@
 import base64
-import io
 
-from PIL import Image
 from fastapi import APIRouter, Body, HTTPException
 from loguru import logger
 
@@ -34,14 +32,10 @@ async def predict(
             + "/"
             + user_id,
         )
-        logger.info(f"{dict_image}")
-        # Convert the image to base64
-        im = Image.fromarray(dict_image[user_id].astype("uint8"))
-        logger.info(f"{im}")
-        rawBytes = io.BytesIO()
-        im.save(rawBytes, "PNG")
-        rawBytes.seek(0)
-        img_b64 = base64.b64encode(rawBytes.read())
+
+        image = next(iter(dict_image.values()))
+
+        img_b64 = base64.b64encode(image).decode("utf-8")
 
         return {"user_id": user_id, "img": img_b64}
     except Exception:
