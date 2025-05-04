@@ -22,7 +22,7 @@ async def predict(
         image_data = base64.b64decode(request.image_base64)
 
         # Call the inference function asynchronously
-        background_tasks.add_task(inference_task, [user_id], [image_data])
+        background_tasks.add_task(inference_task, user_id, image_data)
 
         return {
             "status": "success",

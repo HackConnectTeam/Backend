@@ -5,9 +5,13 @@ folder = "images"
 result_folder = "results"
 
 [frontend]
-url = "https://743b-147-83-201-128.ngrok-free.app"
+url = "https://hackconnect.lamelas24.com"
 
 [mlserver]
 host = "mlserver"
 port = 8050
 batch_size = 2
+
+
+[logging]
+level = "DEBUG"
