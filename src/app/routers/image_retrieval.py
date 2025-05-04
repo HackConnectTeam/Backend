@@ -3,6 +3,7 @@ import io
 
 from PIL import Image
 from fastapi import APIRouter, Body, HTTPException
+from loguru import logger
 
 from src.app.config.config import settings
 from src.app.models.ImageResponse import ImageResponse
@@ -14,12 +15,15 @@ router = APIRouter(prefix="/img_retrieval", tags=["Avatar Image Retrieval"])
 @router.post(
     "/",
     response_model=ImageResponse,
-    summary="Obtain the generated Mii avatar from the user",
+    summary="Generate a Mii from a user at the photo",
 )
 async def predict(
     user_id: str = Body(..., description="Unique user id"),
 ):
     try:
+        print(f"{user_id}")
+        logger.info(f"{user_id}")
+        logger.info(f"{settings.s3.bucket_name}")
         dict_image = retrieve_file(
             s3=get_s3(),
             img_path=settings.s3.bucket_name

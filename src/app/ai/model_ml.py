@@ -13,7 +13,7 @@ from diffusers import (
     UniPCMultistepScheduler,
 )
 from src.app.config.config import settings
-from src.app.utils.image_utils import get_depth_map
+from src.app.utils.image_utils import get_depth_map, resize_image
 from src.app.utils.minio_utils import get_s3, upload_images, retrieve_file
 
 
@@ -29,6 +29,9 @@ class Model(MLModel):
         image = next(iter(image.values()))
 
         image_pil = Image.fromarray(image)
+
+        # Resize for reducing the amount of memory used
+        image_pil = resize_image(image_pil)
 
         # Resize the image to same dimensions
         image_pil = image_pil.resize((image_pil.size[0] // 3, image_pil.size[1] // 3))
@@ -57,6 +60,8 @@ class Model(MLModel):
             torch_dtype=torch.float16,
             use_safetensors=True,
             cache_dir="./model_cache",
+            safety_checker=None,
+            requires_safety_checker=False,
         )
 
         logger.info("Loading Stable Difussion...")
@@ -68,6 +73,8 @@ class Model(MLModel):
             torch_dtype=torch.float16,
             use_safetensors=True,
             cache_dir="./model_cache",
+            safety_checker=None,
+            requires_safety_checker=False,
         )
 
         # Apply memory optimizations
@@ -111,15 +118,19 @@ class Model(MLModel):
 
         logger.info("Prediction images")
         # Make the prediction with the model deployed
-        output = self._predictive(
-            prompt="Image of person to Mii avatar from Wii",
-            image=image,
-            control_image=depth_map,
-            num_inference_steps=20,
-            guidance_scale=7.5,
-        ).images[0]
+        with torch.no_grad():
+            output = self._predictive(
+                prompt="Image of person to Mii avatar from Wii",
+                image=image,
+                control_image=depth_map,
+                num_inference_steps=20,
+                guidance_scale=7.5,
+            ).images[0]
 
         torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+        del image
+        del depth_map
 
         logger.info("Uploading image")
         # Upload the results to the S3 bucket
