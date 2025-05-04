@@ -60,8 +60,6 @@ class Model(MLModel):
             torch_dtype=torch.float16,
             use_safetensors=True,
             cache_dir="./model_cache",
-            safety_checker=None,
-            requires_safety_checker=False,
         )
 
         logger.info("Loading Stable Difussion...")
@@ -73,8 +71,6 @@ class Model(MLModel):
             torch_dtype=torch.float16,
             use_safetensors=True,
             cache_dir="./model_cache",
-            safety_checker=None,
-            requires_safety_checker=False,
         )
 
         # Apply memory optimizations

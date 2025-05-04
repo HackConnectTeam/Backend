@@ -34,9 +34,10 @@ async def predict(
             + "/"
             + user_id,
         )
-
+        logger.info(f"{dict_image}")
         # Convert the image to base64
         im = Image.fromarray(dict_image[user_id].astype("uint8"))
+        logger.info(f"{im}")
         rawBytes = io.BytesIO()
         im.save(rawBytes, "PNG")
         rawBytes.seek(0)
