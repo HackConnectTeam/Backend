@@ -24,6 +24,17 @@ You have to clone both repositories:
 - Frontend: https://github.com/HackConnectTeam/Frontend.
 2. 🧠 **Set Up the Environment**.
    - Install Docker and Docker Compose.
+   - Run a Cloudflare container to expose the application to the internet by tunelling:
+     ```bash
+     docker run --network host cloudflare/cloudflared:latest tunnel --no-autoupdate run --token
+     eyJhIjoiNmMxN2NlMTM1ZDY4NTc0MGJmYmE4NjUxODAzNDA0NTciLCJ0IjoiYjQ3Mzc1OTYtZmU0MS00NDIwLWEyODQtY
+     mFhYjczZGE4YTI4IiwicyI6Ill6RmpaamxoWlRrdE1qRmxNeTAwWkRjMUxUazVNak10WlRsbVkyVXdaVFJqWVdWbSJ9
+     ```
+   - Run these commands in the Frontend folder:
+     ```bash
+     npm install
+     npm run dev
+     ```
    - Create a `.env` file with the necessary environment variables. More information can be found in the [Environment Variables](#-environment-variables) section.
    - Run the Docker containers using Docker Compose:
      ```bash
